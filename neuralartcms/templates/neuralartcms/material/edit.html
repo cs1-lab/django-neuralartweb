@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}ロボット登録{% endblock %}
+
+{% block main %}
+
+    <div class="page-header header-filter" style="background-size: cover; background-position: top center;">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 ml-auto mr-auto">
+          <div class="card card-login">
+            <form class="form" method="post" enctype="multipart/form-data">
+                <!--     form description     -->
+              <div class="card-header card-header-primary text-center">
+                <h4 class="card-title">新規登録</h4>
+              </div>
+              <p class="description text-center">必要事項を入力してください</p>
+
+                <div class="card-body">
+                {% csrf_token %}
+                <!--     form error message     -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <div class="container">
+                        <div class="alert-icon">
+                            <i class="material-icons">error_outline</i>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                        </button>
+                        {% for error in form.non_field_errors %}
+                         <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                    <!--     form main     -->
+                {% for field in form %}
+                    <div class="form-group">
+                        <!--     form label     -->
+                        <label>
+                            {{ field.label_tag }}
+                        </label>
+                        {{ field|add_class:"form-control" }}
+                        <!--     error message     -->
+                        {% for error in field.errors %}
+                            <span class="badge badge-danger">
+                            {{ error }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                </div>
+
+                <div class="footer text-center">
+                    <button type="submit" class="btn btn-primary">
+                        登録する
+                        <div class="ripple-container"></div>
+                    </button>
+                </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+{% endblock %}

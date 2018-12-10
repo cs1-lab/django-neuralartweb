@@ -6,13 +6,14 @@ class Material(models.Model):
     """
     画風変換にて入力する情報
     """
-    user = models.ForeignKey(User, related_name='results', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='materials', on_delete=models.CASCADE)
     material_name = models.CharField(max_length=100)
     content_image = models.ImageField(upload_to='images/material/content/')
     content_segmap = models.ImageField(upload_to='images/material/content_segmap')
     style_image = models.ImageField(upload_to='images/material/style/')
     style_segmap = models.ImageField(upload_to='images/material/style_segmap')
     parameters = models.TextField(blank=True)  # パラメータ調整値、Jsonで格納すること
+    start_at = models.DateTimeField(blank=True)
     great_result = models.CharField(max_length=100)
 
     def __repr__(self):

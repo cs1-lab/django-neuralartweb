@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Index{% endblock %}
+
+{% block main %}
+
+<div class="page-header header-filter clear-filter purple-filter header-small" data-parallax="true" style="background-image: url('./assets/img/bg2.jpg');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 ml-auto mr-auto">
+                <div class="brand">
+                    <h1>登録素材一覧</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main main-raised">
+  <div class="section section-basic">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10">
+            {% if material_list %}
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名前</th>
+                        <th>content_image</th>
+                        <th>アクション</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for material in material_list %}
+                <tr>
+                    <th>{{ material.id }}</th>
+                    <td>
+                    {{ material.material_name }}
+                    </td>
+                    <td><img src="{{ material.content_image.url }}"></td>
+                    <td>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            {% else %}
+                <h2>登録されている素材はありません</h2>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Delete Confirm modal Setting #}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">確認</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p><span id="del_pk"></span> を削除しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        <a href="#" class="btn btn-danger" id="del_url">削除</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(function() {
+  $('.del_confirm').on('click', function () {
+     $("#del_pk").text($(this).data("pk"));
+     $('#del_url').attr('href', $(this).data("url"));
+  });
+});
+</script>
+{% endblock %}
