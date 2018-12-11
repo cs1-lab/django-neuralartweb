@@ -3,9 +3,12 @@ from django.http import HttpResponse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from .models import Material, Result
 from .forms import MaterialForm
+
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
@@ -13,6 +16,7 @@ def index(request):
 # Materialに関する設定
 
 
+@method_decorator(login_required, name='dispatch')
 class MaterialIndexView(ListView):
     """
     Materialの一覧表示
@@ -26,6 +30,7 @@ class MaterialIndexView(ListView):
         return materials
 
 
+@method_decorator(login_required, name='dispatch')
 class MaterialCreateView(CreateView):
     """
     Material新規作成

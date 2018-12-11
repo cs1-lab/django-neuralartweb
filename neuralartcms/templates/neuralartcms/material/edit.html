@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
-{% block title %}ロボット登録{% endblock %}
+{% block title %}素材登録{% endblock %}
 
 {% block main %}
+<div class="page-header header-filter clear-filter purple-filter header-small" data-parallax="true" style="background-image: url('./assets/img/bg2.jpg');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 ml-auto mr-auto">
+                <div class="brand">
+                    <h1>素材登録</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div class="page-header header-filter" style="background-size: cover; background-position: top center;">
+<div class="main main-raised">
+  <div class="section section-basic">
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6 ml-auto mr-auto">
@@ -15,8 +27,7 @@
                 <h4 class="card-title">新規登録</h4>
               </div>
               <p class="description text-center">必要事項を入力してください</p>
-
-                <div class="card-body">
+              <div class="card-body">
                 {% csrf_token %}
                 <!--     form error message     -->
                 {% if form.non_field_errors %}
@@ -35,24 +46,121 @@
                 </div>
                 {% endif %}
 
-                    <!--     form main     -->
-                {% for field in form %}
-                    <div class="form-group">
-                        <!--     form label     -->
-                        <label>
-                            {{ field.label_tag }}
-                        </label>
-                        {{ field|add_class:"form-control" }}
-                        <!--     error message     -->
-                        {% for error in field.errors %}
-                            <span class="badge badge-danger">
+
+                <!--     form main     -->
+                <!-- Material Name -->
+                <div class="form-group">
+                    {{ form.material_name.label_tag }}
+                    {{ form.material_name | add_class:"form-control" }}
+                    <!--error message -->
+                    {% for error in form.material_name.errors %}
+                        <span class="badge badge-danger">
                             {{ error }}
-                            </span>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+                        </span>
+                    {% endfor %}
                 </div>
 
+                <!-- Style Image -->
+                <div class="form-group">
+                    {{ form.style_image.label_tag }}
+                    <div class="input-group">
+                        <input type="text" class="form-control" readonly="">
+                            <label class="input-group-btn">
+                                <span class="btn btn-sm btn-primary">
+                                    Choose File{{ form.style_image | add_class:"form-control"}}
+                                </span>
+                            </label>
+                    </div>
+                    <!--error message -->
+                    {% for error in form.style_image.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Style Segmap -->
+                <div class="form-group">
+                    {{ form.style_segmap.label_tag }}
+                    <div class="input-group">
+                        <input type="text" class="form-control" readonly="">
+                            <label class="input-group-btn">
+                                <span class="btn btn-sm btn-primary">
+                                    Choose File{{ form.style_segmap | add_class:"form-control"}}
+                                </span>
+                            </label>
+                    </div>
+                    <!--error message -->
+                    {% for error in form.style_segmap.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Content Image -->
+                <div class="form-group">
+                    {{ form.content_image.label_tag }}
+                    <div class="input-group">
+                        <input type="text" class="form-control" readonly="">
+                            <label class="input-group-btn">
+                                <span class="btn btn-sm btn-primary">
+                                    Choose File{{ form.content_image | add_class:"form-control"}}
+                                </span>
+                            </label>
+                    </div>
+                    <!--error message -->
+                    {% for error in form.content_image.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Content segmap -->
+                <div class="form-group">
+                    {{ form.content_segmap.label_tag }}
+                    <div class="input-group">
+                        <input type="text" class="form-control" readonly="">
+                            <label class="input-group-btn">
+                                <span class="btn btn-sm btn-primary">
+                                    Choose File{{ form.content_segmap | add_class:"form-control"}}
+                                </span>
+                            </label>
+                    </div>
+                    <!--error message -->
+                    {% for error in form.content_segmap.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Parameters -->
+                <div class="form-group">
+                    {{ form.parameters.label_tag }}
+                    {{ form.parameters | add_class:"form-control" }}
+                    <!--error message -->
+                    {% for error in form.parameters.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Start at -->
+                <div class="form-group">
+                    {{ form.start_at.label_tag }}
+                    {{ form.start_at | add_class:"form-control" }}
+                    <!--error message -->
+                    {% for error in form.start_at.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit Button -->
                 <div class="footer text-center">
                     <button type="submit" class="btn btn-primary">
                         登録する
@@ -60,11 +168,26 @@
                     </button>
                 </div>
 
+
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
     </div>
+  </div>
+</div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).on('change', ':file', function() {
+    var input = $(this),
+    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.parent().parent().prev(':text').val(label);
+});
+</script>
 {% endblock %}
