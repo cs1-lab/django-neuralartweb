@@ -1,6 +1,11 @@
-# Ignore the default SQLite database.
+#=== database ==
 *.sqlite3
+!*/migrations/__init__.py
+*/migrations/*.py
+*/migrations/*.pyc
 
 # ===.idea directory===
 /.idea/*
 
+# == Media ==
+/media/*

@@ -151,7 +151,7 @@
                 <!-- Start at -->
                 <div class="form-group">
                     {{ form.start_at.label_tag }}
-                    {{ form.start_at | add_class:"form-control" }}
+                    {{ form.start_at | add_class:"form-control datetimepicker" }}
                     <!--error message -->
                     {% for error in form.start_at.errors %}
                         <span class="badge badge-danger">
@@ -183,11 +183,27 @@
 
 {% block extra_js %}
 <script>
+{# File Input #}
 $(document).on('change', ':file', function() {
     var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1,
     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
     input.parent().parent().prev(':text').val(label);
+});
+{#  date time picker #}
+$('.datetimepicker').datetimepicker({
+    icons: {
+        time: "fa fa-clock-o",
+        date: "fa fa-calendar",
+        up: "fa fa-chevron-up",
+        down: "fa fa-chevron-down",
+        previous: 'fa fa-chevron-left',
+        next: 'fa fa-chevron-right',
+        today: 'fa fa-screenshot',
+        clear: 'fa fa-trash',
+        close: 'fa fa-remove'
+    },
+    format: 'YYYY-MM-DD HH:00'
 });
 </script>
 {% endblock %}

@@ -20,7 +20,7 @@
   <div class="section section-basic">
     <div class="container">
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
             {% if material_list %}
                 <table class="table table-striped">
                 <thead>
@@ -31,6 +31,7 @@
                         <th>content_segmap</th>
                         <th>style_image</th>
                         <th>style_segmap</th>
+                        <th>生成開始時間</th>
                         <th>アクション</th>
                     </tr>
                 </thead>
@@ -45,6 +46,7 @@
                     <td><img src="{{ material.content_segmap_xs.url }}"></td>
                     <td><img src="{{ material.style_image_xs.url }}"></td>
                     <td><img src="{{ material.style_segmap_xs.url }}"></td>
+                    <td>{{ material.start_at }}</td>
                     <td>
                     </td>
                 </tr>
