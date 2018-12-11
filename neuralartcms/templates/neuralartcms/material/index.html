@@ -28,6 +28,9 @@
                         <th>ID</th>
                         <th>名前</th>
                         <th>content_image</th>
+                        <th>content_segmap</th>
+                        <th>style_image</th>
+                        <th>style_segmap</th>
                         <th>アクション</th>
                     </tr>
                 </thead>
@@ -38,7 +41,10 @@
                     <td>
                     {{ material.material_name }}
                     </td>
-                    <td><img src="{{ material.content_image.url }}"></td>
+                    <td><img src="{{ material.content_image_xs.url }}"></td>
+                    <td><img src="{{ material.content_segmap_xs.url }}"></td>
+                    <td><img src="{{ material.style_image_xs.url }}"></td>
+                    <td><img src="{{ material.style_segmap_xs.url }}"></td>
                     <td>
                     </td>
                 </tr>
