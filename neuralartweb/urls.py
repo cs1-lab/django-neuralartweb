@@ -18,12 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     #path('', views.index, name="top"),  # トップページ
     path('cms/', include(('neuralartcms.urls', 'cms'),)),
     # ログイン関連ビュー
     path('accounts/', include(('accounts.urls', 'accounts'),)),
     path('admin/', admin.site.urls),
+    # api v0
+    path('api_v0/', include(('api_v0.urls', 'api_v0'),)),
 ]
 
 if settings.DEBUG:
