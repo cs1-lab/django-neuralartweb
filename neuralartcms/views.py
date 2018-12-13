@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import Http404
 
 from .models import Material, Result
 from .forms import MaterialForm
@@ -53,4 +54,28 @@ class MaterialCreateView(CreateView):
         kwargs = super(MaterialCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+# ===Resultに関するView===
+
+class ResultIndexView(ListView):
+    """
+    Materialに関するResultの一覧表示
+    """
+    template_name = "neuralartcms/result/index.html"
+    context_object_name = "result_list"
+
+    def get_queryset(self):
+        material = Material.objects.filter(user=self.request.user, id=self.kwargs["material_id"])
+        if not(material.count() > 0):
+            # ログイン中のユーザが持つmaterialが存在しないとき
+            raise Http404
+        result_list = material[0].results.all().order_by("id")
+        return result_list
+
+    def get_context_data(self, **kwargs):
+        context = super(ResultIndexView, self).get_context_data(**kwargs)
+        # urlからmaterialを取得
+        material = Material.objects.get(id=self.kwargs["material_id"])
+        context["material"] = material
+        return context
 

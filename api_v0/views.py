@@ -52,7 +52,9 @@ class ResultSetView(ListCreateAPIView):
 
     問い合わせ例: (POST)
     ---------------------
+    ex: Materialのid=2にresultを登録したいとき::
 
+        /result_set/2
 
     """
     serializer_class = ResultSetSerializer

@@ -40,7 +40,9 @@
                 <tr>
                     <th>{{ material.id }}</th>
                     <td>
-                    {{ material.material_name }}
+                        <a href="{% url 'cms:result_index' material_id=material.pk %}">
+                            {{ material.material_name }}
+                        </a>
                     </td>
                     <td><img src="{{ material.content_image_xs.url }}"></td>
                     <td><img src="{{ material.content_segmap_xs.url }}"></td>
