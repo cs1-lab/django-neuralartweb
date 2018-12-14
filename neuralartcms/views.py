@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
+from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -54,6 +55,23 @@ class MaterialCreateView(CreateView):
         kwargs = super(MaterialCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class MaterialDeleteView(DeleteView):
+    """
+    Material削除
+    """
+    model = Material
+    success_url = reverse_lazy("cms:material_index")
+
+    def get(self, request, *args, **kwargs):
+        # 確認Viewは表示せず、ポップアップ
+        return self.post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        object_ = self.get_object()
+        # 削除完了メッセージの実装の必要あり
+        return super(MaterialDeleteView, self).delete(request, *args, **kwargs)
 
 # ===Resultに関するView===
 
