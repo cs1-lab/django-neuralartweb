@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import Http404
+from django.contrib import messages
 
 from .models import Material, Result
 from .forms import MaterialForm
@@ -40,11 +41,14 @@ class MaterialCreateView(CreateView):
     model = Material
     template_name = 'neuralartcms/material/edit.html'
     form_class = MaterialForm
-    success_url = reverse_lazy('cms:index')
+    success_url = reverse_lazy("cms:material_index")
 
     # ログインしているユーザを設定
     def form_valid(self, form):
         form.instance.user = self.request.user
+        messages.success(self.request,
+                         "{}を追加しました".format(form.instance.material_name),
+                         extra_tags="check")
         return super(MaterialCreateView, self).form_valid(form)
 
     def get_form_kwargs(self):
@@ -57,6 +61,7 @@ class MaterialCreateView(CreateView):
         return kwargs
 
 
+@method_decorator(login_required, name='dispatch')
 class MaterialDeleteView(DeleteView):
     """
     Material削除
@@ -70,11 +75,15 @@ class MaterialDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         object_ = self.get_object()
-        # 削除完了メッセージの実装の必要あり
+        messages.success(self.request,
+                         "{}の削除が完了しました".format(object_.material_name),
+                         extra_tags="check")
         return super(MaterialDeleteView, self).delete(request, *args, **kwargs)
 
 # ===Resultに関するView===
 
+
+@method_decorator(login_required, name='dispatch')
 class ResultIndexView(ListView):
     """
     Materialに関するResultの一覧表示

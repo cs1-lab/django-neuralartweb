@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+from django.contrib.messages import constants as message_constants
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -147,4 +147,12 @@ REST_FRAMEWORK = {
     ),
     'NON_FIELD_ERRORS_KEY': 'detail',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
+
+# Message settings
+MESSAGE_TAGS = {
+    message_constants.INFO: 'alert alert-info',
+    message_constants.SUCCESS: 'alert alert-success',
+    message_constants.WARNING: 'alert alert-warning',
+    message_constants.ERROR: 'alert alert-danger',
 }

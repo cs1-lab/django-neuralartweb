@@ -70,6 +70,7 @@ class Result(models.Model):
     result_image = models.ImageField(upload_to='images/result/')
     iteration = models.IntegerField()
     result_info = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __repr__(self):
         # 主キーとカウント数を返して見やすくする

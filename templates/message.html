@@ -1,0 +1,18 @@
+{# メッセージ表示 #}
+{% if messages %}
+    {% for message in messages %}
+    {# message.tagを何にするかを、settings.pyで指定すること #}
+    <div class="{{ message.tags }}">
+        <div class="container">
+            <div class="alert-icon">
+                {# extra_tagsにはアイコンを指定すること #}
+                <i class="material-icons">{{ message.extra_tags }}</i>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"><i class="material-icons">clear</i></span>
+            </button>
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}

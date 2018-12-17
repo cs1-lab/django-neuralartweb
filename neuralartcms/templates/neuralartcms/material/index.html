@@ -6,6 +6,7 @@
 
 <div class="page-header header-filter clear-filter purple-filter header-small" data-parallax="true" style="background-image: url('./assets/img/bg2.jpg');">
     <div class="container">
+        {% include 'message.html' %}
         <div class="row">
             <div class="col-md-8 ml-auto mr-auto">
                 <div class="brand">
@@ -50,6 +51,9 @@
                     <td><img src="{{ material.style_segmap_xs.url }}"></td>
                     <td>{{ material.start_at }}</td>
                     <td>
+                        <button class="btn btn-danger del_confirm" data-toggle="modal" data-target="#deleteModal" data-pk="{{ material.material_name }}" data-url="{% url 'cms:material_delete' pk=material.pk %}">
+                            削除
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
