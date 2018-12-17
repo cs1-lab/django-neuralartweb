@@ -61,16 +61,16 @@ class MaterialParameterSetForm(Form):
     content_weight = forms.ChoiceField(
         label="コンテンツ画像の強さ",
         choices=(
-            ("7e0", "強め"),
+            ("5e1", "強め"),
             ("5e0", "普通"),
-            ("3e0", "弱め"),
+            ("1e0", "弱め"),
         ),
     )
 
     style_weight = forms.ChoiceField(
         label="スタイル画像の強さ",
         choices=(
-            ("5e2", "強め"),
+            ("1e3", "強め"),
             ("1e2", "普通"),
             ("1e0", "弱め"),
         ),
