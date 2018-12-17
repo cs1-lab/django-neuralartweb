@@ -27,6 +27,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>生成日</th>
                         <th>iteration</th>
                         <th>result image</th>
                         <th>result info</th>
@@ -37,6 +38,7 @@
                 {% for result in result_list %}
                 <tr>
                     <th>{{ result.id }}</th>
+                    <th>{{ result.created_at }}</th>
                     <td>{{ result.iteration }}</td>
                     <td><img src="{{ result.result_image.url }}"></td>
                     <td>{{ result.result_info }}</td>

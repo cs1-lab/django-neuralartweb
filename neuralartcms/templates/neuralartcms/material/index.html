@@ -51,6 +51,9 @@
                     <td><img src="{{ material.style_segmap_xs.url }}"></td>
                     <td>{{ material.start_at }}</td>
                     <td>
+                        <a href="{% url 'cms:material_parameterset' material_id=material.pk %}" class="btn btn-info">
+                            パラメータ設定
+                        </a>
                         <button class="btn btn-danger del_confirm" data-toggle="modal" data-target="#deleteModal" data-pk="{{ material.material_name }}" data-url="{% url 'cms:material_delete' pk=material.pk %}">
                             削除
                         </button>

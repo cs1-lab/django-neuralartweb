@@ -132,7 +132,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # ログイン後のトップページリダイレクト
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/cms'
 
 # 独自定義のユーザモデル
 AUTH_USER_MODEL = 'accounts.User'

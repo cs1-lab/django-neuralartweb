@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from datetime import datetime, timedelta, timezone
 from neuralartcms.models import Material, Result
 
+import json
+
 
 class MaterialForm(ModelForm):
     """
@@ -17,7 +19,7 @@ class MaterialForm(ModelForm):
         fields = ('user', 'material_name',
                   'style_image', 'style_segmap', 'content_image', 'content_segmap',
                   'parameters', 'start_at',)
-        exclude = ('user',)
+        exclude = ('user', 'parameters',)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -52,3 +54,35 @@ class MaterialForm(ModelForm):
             raise forms.ValidationError(error_message)
 
         return start_at
+
+
+class MaterialParameterSetForm(Form):
+
+    content_weight = forms.ChoiceField(
+        label="コンテンツ画像の強さ",
+        choices=(
+            ("7e0", "強め"),
+            ("5e0", "普通"),
+            ("3e0", "弱め"),
+        ),
+    )
+
+    style_weight = forms.ChoiceField(
+        label="スタイル画像の強さ",
+        choices=(
+            ("5e2", "強め"),
+            ("1e2", "普通"),
+            ("1e0", "弱め"),
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+
+        self.material = kwargs.pop('material')  # viewから値を受け取る
+        super(MaterialParameterSetForm, self).__init__(*args, **kwargs)
+
+        # 登録されている値を初期値として設定
+        parameters = json.loads(self.material.parameters)
+        self.fields["content_weight"].initial = parameters["content_weight"]
+        self.fields["style_weight"].initial = parameters["style_weight"]
+

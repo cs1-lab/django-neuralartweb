@@ -4,6 +4,17 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from imagekit.processors import ResizeToFit
 
+import json
+
+
+def default_parameters():
+    parameters = {}
+
+    parameters["content_weight"] = "5e0"
+    parameters["style_weight"] = "1e2"
+
+    return json.dumps(parameters)
+
 
 class Material(models.Model):
     """
@@ -50,7 +61,7 @@ class Material(models.Model):
                                         processors=[ResizeToFit(width='500', upscale=False)],
                                         format='JPEG',)
 
-    parameters = models.TextField(blank=True)  # パラメータ調整値、Jsonで格納すること
+    parameters = models.TextField(blank=True, default=default_parameters)  # パラメータ調整値、Jsonで格納すること
     start_at = models.DateTimeField(blank=True)
     great_result = models.CharField(max_length=100)
 

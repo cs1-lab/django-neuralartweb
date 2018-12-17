@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.views.generic import DeleteView
+from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -10,11 +11,13 @@ from django.http import Http404
 from django.contrib import messages
 
 from .models import Material, Result
-from .forms import MaterialForm
+from .forms import MaterialForm, MaterialParameterSetForm
+
+import json
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+def home(request):
+    return render(request, 'neuralartcms/home.html')
 
 # Materialに関する設定
 
@@ -80,6 +83,53 @@ class MaterialDeleteView(DeleteView):
                          extra_tags="check")
         return super(MaterialDeleteView, self).delete(request, *args, **kwargs)
 
+
+class MaterialParameterSetView(FormView):
+    """
+    Materialの(画像生成に必要な)パラメータを設定する
+
+    parameterフィールドにjsonで保存する
+    """
+    form_class = MaterialParameterSetForm
+    template_name = "neuralartcms/material/parameter_set.html"
+    success_url = reverse_lazy("cms:material_index")
+
+    def __init__(self, *args, **kwargs):
+        super(MaterialParameterSetView, self).__init__(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(MaterialParameterSetView, self).get_context_data(**kwargs)
+        # urlからmaterialを取得
+        material = Material.objects.get(id=self.kwargs["material_id"])
+        context["material"] = material
+        return context
+
+    def get_form_kwargs(self):
+        """
+        formへの値渡し
+        :return:
+        """
+        kwargs = super(MaterialParameterSetView, self).get_form_kwargs()
+        kwargs["material"] = Material.objects.get(id=self.kwargs["material_id"])
+        return kwargs
+
+    def form_valid(self, form):
+        """
+        parameterの設定を行う
+        :param form:
+        :return:
+        """
+        parameters = {}
+        parameters["content_weight"] = self.request.POST.get("content_weight")
+        parameters["style_weight"] = self.request.POST.get("style_weight")
+        parameters = json.dumps(parameters)
+
+        Material.objects.filter(id=self.kwargs["material_id"]).update(parameters=parameters)
+        return super(MaterialParameterSetView, self).form_valid(form)
+
+
+
+
 # ===Resultに関するView===
 
 
@@ -96,7 +146,7 @@ class ResultIndexView(ListView):
         if not(material.count() > 0):
             # ログイン中のユーザが持つmaterialが存在しないとき
             raise Http404
-        result_list = material[0].results.all().order_by("id")
+        result_list = material[0].results.all().order_by("-created_at")
         return result_list
 
     def get_context_data(self, **kwargs):

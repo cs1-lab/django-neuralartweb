@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from neuralartcms.models import Material, Result
 
+import json
+
 class MaterialDetailSerializer(serializers.ModelSerializer):
     """
     Materialのが画像などを取得する
@@ -41,7 +43,7 @@ class MaterialDetailSerializer(serializers.ModelSerializer):
         return instance.style_segmap.url
 
     def get_parameters(self, instance):
-        return instance.parameters
+        return json.loads(instance.parameters)
 
     def get_start_at(self, instance):
         return instance.start_at
