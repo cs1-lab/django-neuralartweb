@@ -79,14 +79,17 @@ class MaterialForm(ModelForm):
         全体のバリデーション
         :return:
         """
-        cleaned_data = super(ModelForm, self).clean()
-        if self.is_valid:
-            # 他のバリデーションが通ってない場合は、中断
-            return cleaned_data
+        cleaned_data = super(MaterialForm, self).clean()
 
-        si_w, si_h = get_image_dimensions(cleaned_data.get("style_image"))
+        si = cleaned_data.get("style_image")
+        ci = cleaned_data.get("content_image")
+        if not si or not ci:
+            # style_imageとcontent_imageについては、各バリデーションが成功済みの必要がある
+            # これがないと、key errorになる。
+            return cleaned_data
+        si_w, si_h = get_image_dimensions(si)
         ss_w, ss_h = get_image_dimensions(cleaned_data.get("style_segmap"))
-        ci_w, ci_h = get_image_dimensions(cleaned_data.get("content_image"))
+        ci_w, ci_h = get_image_dimensions(ci)
         cs_w, cs_h = get_image_dimensions(cleaned_data.get("content_segmap"))
 
         if si_w != ss_w or si_h != ss_h:
@@ -135,4 +138,46 @@ class MaterialParameterSetForm(Form):
         parameters = json.loads(self.material.parameters)
         self.fields["content_weight"].initial = parameters["content_weight"]
         self.fields["style_weight"].initial = parameters["style_weight"]
+
+
+class ResultUpdateForm(ModelForm):
+    """
+    result更新時のフォーム
+    主に、result_nameとis_publicの設定を行うためのもの
+    """
+
+    class Meta:
+        model = Result
+        fields = ('result_name', 'is_public')
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')  # viewから値を受け取る
+        super(ResultUpdateForm, self).__init__(*args, **kwargs)
+
+    def clean_result_name(self):
+        cleaned_data = super(ModelForm, self).clean()
+        result_name = cleaned_data.get("result_name")
+
+        # result_nameは一意でないといけない
+        if Result.objects.filter(result_name=result_name).exclude(result_name='').exclude(id=self.instance.pk):
+            # 同じresult_nameがあるとき
+            error_message = "{}は既に登録されています。".format(result_name)
+            raise forms.ValidationError(error_message)
+
+        return result_name
+
+    def clean(self):
+        cleaned_data = super(ModelForm, self).clean()
+
+        result_name = cleaned_data.get("result_name")
+        is_public = cleaned_data.get("is_public")
+
+        # 正しく値が取れているか（全てのバリデーションに通っているか）確認
+        if not result_name or not is_public:
+            return cleaned_data
+
+        if is_public is True and result_name=""
+
+
+
 
