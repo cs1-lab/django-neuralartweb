@@ -84,7 +84,7 @@ class Result(models.Model):
                                             format='JPEG',
                                             options={"quality": 60})
     result_image_sm = ImageSpecField(source='result_image',
-                                        processors=[ResizeToFit(width='500', upscale=False)],
+                                        processors=[ResizeToFit(width='300', upscale=False)],
                                         format='JPEG',)
 
     iteration = models.IntegerField()

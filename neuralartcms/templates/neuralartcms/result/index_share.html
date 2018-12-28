@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Index{% endblock %}
+
+{% block main %}
+
+<div class="page-header header-filter clear-filter purple-filter header-small" data-parallax="true" style="background-image: url('./assets/img/bg2.jpg');">
+    <div class="container">
+        {% include 'message.html' %}
+        <div class="row">
+            <div class="col-md-8 ml-auto mr-auto">
+                <div class="brand">
+                    <h1>完全に独創的な作品の数々を鑑賞</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-raised main">
+  <div class="section">
+    <div class="container">
+      <div class="row">
+            {% if result_list %}
+                {% for result in result_list %}
+                    <div class="col-xs-6 col-md-4">
+                        <div class="thumbnail">
+                            <a href="{{ result.result_image.url }}">
+                                <img src="{{ result.result_image_sm.url }}">
+                            </a>
+                            <div class="caption">
+                                <h3>{{ result.result_name }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                共有されている画像はありません
+            {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

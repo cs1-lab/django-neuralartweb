@@ -14,6 +14,7 @@ urlpatterns = [
     path('result/<int:material_id>/', views.ResultIndexView.as_view(), name='result_index'),  # 一覧
     path('result/<int:pk>/delete', views.ResultDeleteView.as_view(), name='result_delete'),  # 削除
     # 更新(主に、result_nameと共有の設定用)
-    path('result/<int:pk>/update', views.ResultUpdateView.as_view(), name='result_update')
+    path('result/<int:pk>/update', views.ResultUpdateView.as_view(), name='result_update'),
+    path('result_share/', views.ResultShareView.as_view(), name='result_share'),
 
 ]

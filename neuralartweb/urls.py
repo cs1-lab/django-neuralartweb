@@ -18,9 +18,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from neuralartcms import views
 
 urlpatterns = [
-    #path('', views.index, name="top"),  # トップページ
+    path('', views.home, name="top"),  # トップページ
     path('cms/', include(('neuralartcms.urls', 'cms'),)),
     # ログイン関連ビュー
     path('accounts/', include(('accounts.urls', 'accounts'),)),

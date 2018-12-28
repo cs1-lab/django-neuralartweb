@@ -60,8 +60,6 @@ class MaterialForm(ModelForm):
         start_at = cleaned_data.get('start_at')
         JST = timezone(timedelta(hours=+9))
 
-        print(type(start_at))
-
         if start_at <= datetime.now(JST)+timedelta(hours=3):
             # 現在より3時間後から予約可能
             error_message = "現在より3時間後から予約可能です"

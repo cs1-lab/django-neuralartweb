@@ -85,6 +85,7 @@ class MaterialDeleteView(DeleteView):
         return super(MaterialDeleteView, self).delete(request, *args, **kwargs)
 
 
+@method_decorator(login_required, name='dispatch')
 class MaterialParameterSetView(FormView):
     """
     Materialの(画像生成に必要な)パラメータを設定する
@@ -201,3 +202,17 @@ class ResultUpdateView(UpdateView):
     def get_success_url(self):
         material_id = self.object.material.id
         return reverse_lazy('cms:result_index', kwargs={'material_id': material_id})
+
+
+class ResultShareView(ListView):
+    """
+    共有が許可されたresultの一覧表示
+    """
+    template_name = 'neuralartcms/result/index_share.html'
+    context_object_name = 'result_list'
+
+    def get_queryset(self):
+        # ランダムに100個までを取得
+        # order_by('?')は計算コストがかかる場合があるので、改善の余地がある。
+        materials = Result.objects.all().filter(is_public=True).order_by('?')[:100]
+        return materials
