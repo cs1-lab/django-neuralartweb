@@ -172,11 +172,13 @@ class ResultUpdateForm(ModelForm):
         result_name = cleaned_data.get("result_name")
         is_public = cleaned_data.get("is_public")
 
-        # 正しく値が取れているか（全てのバリデーションに通っているか）確認
-        if not result_name or not is_public:
-            return cleaned_data
+        if is_public is True and result_name == "":
+            # 共有が許可されている時は、result_nameがきちんと設定されていないといけない
+            error_message = "公開を許可するときは、result_nameを正しく設定してください。"
+            raise forms.ValidationError(error_message)
 
-        if is_public is True and result_name=""
+        return cleaned_data
+
 
 
 
