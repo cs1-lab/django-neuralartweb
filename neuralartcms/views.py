@@ -4,7 +4,6 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import FormView
-from django.views.generic import UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -12,7 +11,7 @@ from django.http import Http404
 from django.contrib import messages
 
 from .models import Material, Result
-from .forms import MaterialForm, MaterialParameterSetForm, ResultUpdateForm
+from .forms import MaterialForm, MaterialParameterSetForm
 
 import json
 
@@ -182,22 +181,3 @@ class ResultDeleteView(DeleteView):
         return reverse_lazy('cms:result_index', kwargs={'material_id': material_id})
 
 
-@method_decorator(login_required, name='dispatch')
-class ResultUpdateView(UpdateView):
-    """
-    result更新
-    主に、result_nameと共有の設定を行う
-    """
-    model = Result
-    template_name = 'neuralartcms/edit.html'
-    form_class = ResultUpdateForm
-
-    # formへ値渡し
-    def get_form_kwargs(self):
-        kwargs = super(ResultUpdateView, self).get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def get_success_url(self):
-        material_id = self.object.material.id
-        return reverse_lazy('cms:result_index', kwargs={'material_id': material_id})
