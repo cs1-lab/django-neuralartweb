@@ -1,0 +1,5 @@
+django
+djangorestframework
+markdown
+pillow
+django-imagekit
