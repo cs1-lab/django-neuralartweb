@@ -3,3 +3,4 @@ djangorestframework
 markdown
 pillow
 django-imagekit
+pytest-django
