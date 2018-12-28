@@ -82,6 +82,8 @@ class Result(models.Model):
     iteration = models.IntegerField()
     result_info = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    result_name = models.CharField(blank=True, max_length=70)  # 作品名(is_public=Trueの時は必須となる)
+    is_public = models.BooleanField(default=False)  # 共有するかどうか
 
     def __repr__(self):
         # 主キーとカウント数を返して見やすくする
