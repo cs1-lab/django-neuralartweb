@@ -12,4 +12,6 @@ urlpatterns = [
          name="material_parameterset"),  # parameter設定
     # Result関連
     path('result/<int:material_id>/', views.ResultIndexView.as_view(), name='result_index'),  # 一覧
+    path('result/<int:pk>/delete', views.ResultDeleteView.as_view(), name='result_delete'),  # 削除
+
 ]

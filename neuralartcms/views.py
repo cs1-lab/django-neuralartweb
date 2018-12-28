@@ -156,3 +156,28 @@ class ResultIndexView(ListView):
         context["material"] = material
         return context
 
+
+@method_decorator(login_required, name='dispatch')
+class ResultDeleteView(DeleteView):
+    """
+    Result削除
+    """
+    model = Result
+    #success_url = reverse_lazy("cms:result_index")
+
+    def get(self, request, *args, **kwargs):
+        # 確認Viewは表示せず、ポップアップ
+        return self.post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        object_ = self.get_object()
+        messages.success(self.request,
+                         "結果の削除を１件完了しました",
+                         extra_tags="check")
+        return super(ResultDeleteView, self).delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        material_id = self.object.material.id
+        return reverse_lazy('cms:result_index', kwargs={'material_id': material_id})
+
+

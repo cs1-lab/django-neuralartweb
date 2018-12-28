@@ -79,6 +79,14 @@ class Result(models.Model):
     """
     material = models.ForeignKey(Material, related_name='results', on_delete=models.CASCADE)
     result_image = models.ImageField(upload_to='images/result/')
+    result_image_xs = ImageSpecField(source='result_image',
+                                            processors=[ResizeToFit(width='150')],
+                                            format='JPEG',
+                                            options={"quality": 60})
+    result_image_sm = ImageSpecField(source='result_image',
+                                        processors=[ResizeToFit(width='500', upscale=False)],
+                                        format='JPEG',)
+
     iteration = models.IntegerField()
     result_info = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

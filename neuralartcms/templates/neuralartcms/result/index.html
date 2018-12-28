@@ -6,6 +6,7 @@
 
 <div class="page-header header-filter clear-filter purple-filter header-small" data-parallax="true" style="background-image: url('./assets/img/bg2.jpg');">
     <div class="container">
+        {% include 'message.html' %}
         <div class="row">
             <div class="col-md-8 ml-auto mr-auto">
                 <div class="brand">
@@ -43,6 +44,9 @@
                     <td><img src="{{ result.result_image.url }}"></td>
                     <td>{{ result.result_info }}</td>
                     <th>
+                        <button class="btn btn-danger del_confirm" data-toggle="modal" data-target="#deleteModal" data-pk="{{ result.pk }}" data-url="{% url 'cms:result_delete' pk=result.pk %}">
+                            削除
+                        </button>
                     </th>
 
 
@@ -51,7 +55,8 @@
                 </tbody>
                 </table>
             {% else %}
-                <h2>表示できる生成結果はありません</h2>
+                <h2>まだ、作品の生成を行っていないようですね。<br>
+                    素材を登録して、すぐにあたなの芸術的直観を確かめましょう。</h2>
             {% endif %}
         </div>
       </div>
@@ -59,10 +64,34 @@
   </div>
 </div>
 
-
+{# Delete Confirm modal Setting #}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">確認</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p><span id="del_pk"></span> を削除しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        <a href="#" class="btn btn-danger" id="del_url">削除</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 
 {% block extra_js %}
-
+<script>
+$(function() {
+  $('.del_confirm').on('click', function () {
+     $("#del_pk").text($(this).data("pk"));
+     $('#del_url').attr('href', $(this).data("url"));
+  });
+});
+</script>
 {% endblock %}
