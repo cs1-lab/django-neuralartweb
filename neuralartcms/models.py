@@ -1,8 +1,13 @@
 from django.db import models
+from django.core.files.images import get_image_dimensions
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
+from io import BytesIO
 from accounts.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from imagekit.processors import ResizeToFit
+from PIL import Image
 
 import json
 
@@ -34,7 +39,8 @@ class Material(models.Model):
                                          processors=[ResizeToFit(width='500', upscale=False)],
                                          format='JPEG',)
 
-    content_segmap = models.ImageField(upload_to='images/material/content_segmap')
+    use_content_segmap = models.BooleanField(default=True)
+    content_segmap = models.ImageField(upload_to='images/material/content_segmap', blank=True)
     content_segmap_xs = ImageSpecField(source='content_segmap',
                                               processors=[ResizeToFit(width='150')],
                                               format='JPEG',
@@ -52,7 +58,8 @@ class Material(models.Model):
                                        processors=[ResizeToFit(width='500', upscale=False)],
                                        format='JPEG',)
 
-    style_segmap = models.ImageField(upload_to='images/material/style_segmap')
+    use_style_segmap = models.BooleanField(default=True)
+    style_segmap = models.ImageField(upload_to='images/material/style_segmap', blank=True)
     style_segmap_xs = ImageSpecField(source='style_segmap',
                                             processors=[ResizeToFit(width='150')],
                                             format='JPEG',
@@ -62,8 +69,32 @@ class Material(models.Model):
                                         format='JPEG',)
 
     parameters = models.TextField(blank=True, default=default_parameters)  # パラメータ調整値、Jsonで格納すること
-    start_at = models.DateTimeField(blank=True)
+    start_at = models.DateTimeField(blank=False)
     great_result = models.CharField(max_length=100)
+
+    def save(self, *args, **kwargs):
+
+        # style_segmapを使わない設定の時に、白い画像を自動で生成する
+        if self.use_style_segmap is False:
+
+            ss_w, ss_h = get_image_dimensions(self.style_image)
+            style_segmap_ = Image.new('RGB', (ss_w, ss_h), (255, 255, 255))
+
+            style_segmap_io = BytesIO()
+            style_segmap_.save(style_segmap_io, format='JPEG')
+
+            tmp_name = "white_style_segmap"
+            self.style_segmap.save(
+                tmp_name,
+                content=ContentFile(style_segmap_io.getvalue()),
+                save=False
+            )
+
+        # content_segmapを使わないときは、content_imageと同一になる
+        if self.use_content_segmap is False:
+            self.content_segmap = self.content_image
+
+        super(Material, self).save(*args, **kwargs)
 
     def __repr__(self):
         # 主キーとnameを返して見やすくする

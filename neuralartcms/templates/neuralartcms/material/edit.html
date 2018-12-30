@@ -51,7 +51,7 @@
                 <!-- Material Name -->
                 <div class="form-group">
                     {{ form.material_name.label_tag }}
-                    {{ form.material_name | add_class:"form-control" }}
+                    {{ form.material_name | add_class:"form-control"}}
                     <!--error message -->
                     {% for error in form.material_name.errors %}
                         <span class="badge badge-danger">
@@ -73,6 +73,23 @@
                     </div>
                     <!--error message -->
                     {% for error in form.style_image.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- use style segmap -->
+                <div class="form-check">
+                    <label class="form-check-label">
+                        {{ form.use_style_segmap | add_class:"form-check-input" }}
+                        {{ form.use_style_segmap.label }}
+                        <span class="form-check-sign">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                    <!--error message -->
+                    {% for error in form.user_style_segmap.errors %}
                         <span class="badge badge-danger">
                             {{ error }}
                         </span>
@@ -111,6 +128,24 @@
                     </div>
                     <!--error message -->
                     {% for error in form.content_image.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- use content segmap -->
+
+                <div class="form-check">
+                    <label class="form-check-label">
+                        {{ form.use_content_segmap | add_class:"form-check-input"  }}
+                        {{ form.use_content_segmap.label }}
+                        <span class="form-check-sign">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                    <!--error message -->
+                    {% for error in form.user_content_segmap.errors %}
                         <span class="badge badge-danger">
                             {{ error }}
                         </span>
@@ -205,5 +240,40 @@ $('.datetimepicker').datetimepicker({
     },
     format: 'YYYY-MM-DD HH:00'
 });
+{# チェックボックスの値で入力の許可を判定 #}
+$(document).ready(function () {
+    // style_segmapに関する入力の有効・無効
+    $('#id_use_style_segmap').change(function () {
+        let target_box = $("#id_style_segmap")
+        if ($('#id_use_style_segmap').prop("checked")){
+            // チェックがされていれば
+            target_box.prop('disabled', false);
+            target_box.parent().removeClass('btn-default')
+            target_box.parent().addClass('btn-primary')
+        } else {
+            // チェックがなければ
+            target_box.prop('disabled', true);
+            target_box.parent().removeClass('btn-primary')
+            target_box.parent().addClass('btn-default')
+        }
+    });
+
+    // content_segmapに関する入力の有効・無効
+    $('#id_use_content_segmap').change(function () {
+        let target_box = $("#id_content_segmap")
+        if ($('#id_use_content_segmap').prop("checked")){
+            // チェックがされていれば
+            target_box.prop('disabled', false);
+            target_box.parent().removeClass('btn-default')
+            target_box.parent().addClass('btn-primary')
+        } else {
+            // チェックがなければ
+            target_box.prop('disabled', true);
+            target_box.parent().removeClass('btn-primary')
+            target_box.parent().addClass('btn-default')
+        }
+    });
+});
+
 </script>
 {% endblock %}

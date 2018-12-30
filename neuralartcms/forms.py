@@ -15,10 +15,12 @@ class MaterialForm(ModelForm):
     """
     Materialのフォーム
     """
+
     class Meta:
         model = Material
         fields = ('user', 'material_name',
-                  'style_image', 'style_segmap', 'content_image', 'content_segmap',
+                  'style_image', 'use_style_segmap', 'style_segmap',
+                  'content_image', 'use_content_segmap', 'content_segmap',
                   'parameters', 'start_at',)
         exclude = ('user', 'parameters',)
 
@@ -26,6 +28,7 @@ class MaterialForm(ModelForm):
         self.user = kwargs.pop('user')
         self.MAX_W = 1500
         self.MAX_H = 1500
+
         super(MaterialForm, self).__init__(*args, **kwargs)
 
     def clean_material_name(self):
@@ -46,6 +49,12 @@ class MaterialForm(ModelForm):
             raise forms.ValidationError("画像サイズは最大{}px×{}pxです。".format(self.MAX_W, self.MAX_H))
         return style_image
 
+    def clean_style_segmap(self):
+        use_style_segmap = self.cleaned_data["use_style_segmap"]
+        if use_style_segmap and self.cleaned_data["style_segmap"] is None:
+            raise forms.ValidationError("style segmapを利用する設定です。style segmapを指定してください。")
+        return self.cleaned_data["style_segmap"]
+
     def clean_content_image(self):
         content_image = self.cleaned_data["content_image"]
         w, h = get_image_dimensions(content_image)
@@ -53,6 +62,12 @@ class MaterialForm(ModelForm):
             # 画像サイズが大きすぎるとき
             raise forms.ValidationError("画像サイズは最大{}px×{}pxです。".format(self.MAX_W, self.MAX_H))
         return content_image
+
+    def clean_content_segmap(self):
+        use_content_segmap = self.cleaned_data["use_content_segmap"]
+        if use_content_segmap and self.cleaned_data["content_segmap"] is None:
+            raise forms.ValidationError("content segmapを利用する設定です。content segmapを指定してください。")
+        return self.cleaned_data["content_segmap"]
 
     def clean_start_at(self):
         cleaned_data = super(ModelForm, self).clean()
@@ -80,29 +95,34 @@ class MaterialForm(ModelForm):
         cleaned_data = super(MaterialForm, self).clean()
 
         si = cleaned_data.get("style_image")
+        ss = cleaned_data.get("style_segmap")
         ci = cleaned_data.get("content_image")
+        cs = cleaned_data.get("content_segmap")
+
         if not si or not ci:
             # style_imageとcontent_imageについては、各バリデーションが成功済みの必要がある
             # これがないと、key errorになる。
             return cleaned_data
+
         si_w, si_h = get_image_dimensions(si)
-        ss_w, ss_h = get_image_dimensions(cleaned_data.get("style_segmap"))
+        if self.cleaned_data["use_style_segmap"] and ss is not None:
+            ss_w, ss_h = get_image_dimensions(ss)
+            if si_w != ss_w or si_h != ss_h:
+                # sytle_imageとstyle_segmapのサイズが違うとき
+                error_message = "Style imageとStyle segmapのサイズが違います"
+                self._errors["style_image"] = self.error_class(["size: {}×{}".format(si_w, si_h)])
+                self._errors["style_segmap"] = self.error_class(["size: {}×{}".format(ss_w, ss_h)])
+                raise forms.ValidationError(error_message)
+
         ci_w, ci_h = get_image_dimensions(ci)
-        cs_w, cs_h = get_image_dimensions(cleaned_data.get("content_segmap"))
-
-        if si_w != ss_w or si_h != ss_h:
-            # sytle_imageとstyle_segmapのサイズが違うとき
-            error_message = "Style imageとStyle segmapのサイズが違います"
-            self._errors["style_image"] = self.error_class(["size: {}×{}".format(si_w, si_h)])
-            self._errors["style_segmap"] = self.error_class(["size: {}×{}".format(ss_w, ss_h)])
-            raise forms.ValidationError(error_message)
-
-        if ci_w != cs_w or ci_h != cs_h:
-            # content_imageとcontent_segmapのサイズが違うとき
-            error_message = "Content imageとContent segmapのサイズが違います"
-            self._errors["content_image"] = self.error_class(["size: {}×{}".format(ci_w, ci_h)])
-            self._errors["content_segmap"] = self.error_class(["size: {}×{}".format(cs_w, cs_h)])
-            raise forms.ValidationError(error_message)
+        if self.cleaned_data["use_content_segmap"] and cs is not None:
+            cs_w, cs_h = get_image_dimensions(cs)
+            if ci_w != cs_w or ci_h != cs_h:
+                # content_imageとcontent_segmapのサイズが違うとき
+                error_message = "Content imageとContent segmapのサイズが違います"
+                self._errors["content_image"] = self.error_class(["size: {}×{}".format(ci_w, ci_h)])
+                self._errors["content_segmap"] = self.error_class(["size: {}×{}".format(cs_w, cs_h)])
+                raise forms.ValidationError(error_message)
 
         return cleaned_data
 
