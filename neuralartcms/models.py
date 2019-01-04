@@ -17,6 +17,7 @@ def default_parameters():
 
     parameters["content_weight"] = "5e0"
     parameters["style_weight"] = "1e2"
+    parameters["max_iter"] = "1000"
 
     return json.dumps(parameters)
 
@@ -58,7 +59,7 @@ class Material(models.Model):
                                        processors=[ResizeToFit(width='500', upscale=False)],
                                        format='JPEG',)
 
-    use_style_segmap = models.BooleanField(default=True)
+    style_segmap_setting = models.CharField(max_length=30)
     style_segmap = models.ImageField(upload_to='images/material/style_segmap', blank=True)
     style_segmap_xs = ImageSpecField(source='style_segmap',
                                             processors=[ResizeToFit(width='150')],
@@ -75,15 +76,27 @@ class Material(models.Model):
     def save(self, *args, **kwargs):
 
         # style_segmapを使わない設定の時に、白い画像を自動で生成する
-        if self.use_style_segmap is False:
+        if self.style_segmap_setting != "use":
 
             ss_w, ss_h = get_image_dimensions(self.style_image)
-            style_segmap_ = Image.new('RGB', (ss_w, ss_h), (255, 255, 255))
+
+            if self.style_segmap_setting == "white":
+                color = (255, 255, 255)
+            elif self.style_segmap_setting == "black":
+                color = (0, 0, 0)
+            elif self.style_segmap_setting == "red":
+                color = (255, 0, 0)
+            elif self.style_segmap_setting == "green":
+                color = (0, 255, 0)
+            else:
+                color = (0, 0, 255)
+
+            style_segmap_ = Image.new('RGB', (ss_w, ss_h), color)
 
             style_segmap_io = BytesIO()
             style_segmap_.save(style_segmap_io, format='JPEG')
 
-            tmp_name = "white_style_segmap"
+            tmp_name = "style_segmap"
             self.style_segmap.save(
                 tmp_name,
                 content=ContentFile(style_segmap_io.getvalue()),

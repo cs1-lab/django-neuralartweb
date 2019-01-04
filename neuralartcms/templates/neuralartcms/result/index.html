@@ -11,7 +11,7 @@
             <div class="col-md-8 ml-auto mr-auto">
                 <div class="brand">
                     <h1>{{ material.material_name }}の生成画像一覧</h1>
-                    <h3>各モーションからフレームの詳細を確認</h3>
+                    <h3>生成日時の新しい順に表示されます。</h3>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>生成日</th>
+                        <th>生成日時</th>
                         <th>iteration</th>
                         <th>result image</th>
                         <th>result info</th>
@@ -72,8 +72,7 @@
                 </tbody>
                 </table>
             {% else %}
-                <h2>まだ、作品の生成を行っていないようですね。<br>
-                    素材を登録して、すぐにあたなの芸術的直観を確かめましょう。</h2>
+                <h2>完了した生成画像はありません</h2>
             {% endif %}
         </div>
       </div>

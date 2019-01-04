@@ -124,6 +124,7 @@ class MaterialParameterSetView(FormView):
         parameters = {}
         parameters["content_weight"] = self.request.POST.get("content_weight")
         parameters["style_weight"] = self.request.POST.get("style_weight")
+        parameters["max_iter"] = self.request.POST.get("max_iter")
         parameters = json.dumps(parameters)
 
         Material.objects.filter(id=self.kwargs["material_id"]).update(parameters=parameters)
