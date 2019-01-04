@@ -4,3 +4,4 @@ markdown
 pillow
 django-imagekit
 pytest-django
+PyMySQL
