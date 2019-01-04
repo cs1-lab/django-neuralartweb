@@ -1,7 +1,10 @@
 django
 djangorestframework
+djangorestframework-jwt
+django-widget-tweaks
 markdown
 pillow
 django-imagekit
 pytest-django
 PyMySQL
+uwsgi
