@@ -10,17 +10,16 @@
       {% include 'message.html' %}
       <div class="row">
         <div class="col-md-6">
-          <h1 class="title">驚くほど簡単な、画風変換作品制作</h1>
-          <h4>煩わしい作業が伴っては、芸術的制作に困難を伴います。<br>
-          直感的な画風変換により、あなたの芸術的発想を具体化しましょう。</h4>
+          <h1 class="title">画風変換作品制作</h1>
+          <h4>ベータ版での提供でございます</h4>
           <br>
             {% if user.is_authenticated %}
             <a href="{% url 'cms:material_index' %}" class="btn btn-danger btn-raised btn-lg">
-                 <i class="fa fa-play"></i> 素晴らしい作品の数々を確認する
+                 <i class="fa fa-play"></i> 作品の数々を確認する
             </a>
             {% else %}
               <a href="{% url 'accounts:signup' %}" class="btn btn-danger btn-raised btn-lg">
-                 <i class="fa fa-play"></i> 早速登録して、作品制作をはじめる
+                 <i class="fa fa-play"></i> 登録して、作品制作をはじめる
               </a>
             {% endif %}
         </div>

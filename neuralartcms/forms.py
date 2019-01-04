@@ -15,11 +15,22 @@ class MaterialForm(ModelForm):
     """
     Materialのフォーム
     """
+    style_segmap_setting = forms.ChoiceField(
+        label="スタイルセマンティックマップ利用設定",
+        choices=(
+            ("use", "スタイルセマンティックマップを指定する"),
+            ("white", "単色背景(白)"),
+            ("black", "単色背景(黒)"),
+            ("blue", "単色背景(青)"),
+            ("red", "単色背景(赤)"),
+            ("green", "単色背景(緑)")
+        ),
+    )
 
     class Meta:
         model = Material
         fields = ('user', 'material_name',
-                  'style_image', 'use_style_segmap', 'style_segmap',
+                  'style_image', 'style_segmap_setting', 'style_segmap',
                   'content_image', 'use_content_segmap', 'content_segmap',
                   'parameters', 'start_at',)
         exclude = ('user', 'parameters',)
@@ -50,8 +61,8 @@ class MaterialForm(ModelForm):
         return style_image
 
     def clean_style_segmap(self):
-        use_style_segmap = self.cleaned_data["use_style_segmap"]
-        if use_style_segmap and self.cleaned_data["style_segmap"] is None:
+        style_segmap_setting = self.cleaned_data["style_segmap_setting"]
+        if (style_segmap_setting == "use") and self.cleaned_data["style_segmap"] is None:
             raise forms.ValidationError("style segmapを利用する設定です。style segmapを指定してください。")
         return self.cleaned_data["style_segmap"]
 
@@ -105,7 +116,7 @@ class MaterialForm(ModelForm):
             return cleaned_data
 
         si_w, si_h = get_image_dimensions(si)
-        if self.cleaned_data["use_style_segmap"] and ss is not None:
+        if (self.cleaned_data["style_segmap_setting"]=="use") and ss is not None:
             ss_w, ss_h = get_image_dimensions(ss)
             if si_w != ss_w or si_h != ss_h:
                 # sytle_imageとstyle_segmapのサイズが違うとき
@@ -147,6 +158,17 @@ class MaterialParameterSetForm(Form):
         ),
     )
 
+    max_iter = forms.ChoiceField(
+        label="学習回数",
+        choices=(
+            ("1000", '1000回(推奨)'),
+            ("2000", "2000回"),
+            ("3000", "3000回"),
+            ("4000", "4000回"),
+            ("5000", "5000回"),
+        )
+    )
+
     def __init__(self, *args, **kwargs):
 
         self.material = kwargs.pop('material')  # viewから値を受け取る
@@ -156,6 +178,7 @@ class MaterialParameterSetForm(Form):
         parameters = json.loads(self.material.parameters)
         self.fields["content_weight"].initial = parameters["content_weight"]
         self.fields["style_weight"].initial = parameters["style_weight"]
+        self.fields["max_iter"].initial = parameters["max_iter"]
 
 
 class ResultUpdateForm(ModelForm):

@@ -27,7 +27,7 @@
                 <h4 class="card-title">パラメータ設定</h4>
               </div>
               <p class="description text-center">
-                  独創的な作品は、独創的な設定から生まれます。
+                  独創的な設定
               </p>
               <div class="card-body">
                 {% csrf_token %}
@@ -68,6 +68,18 @@
                     {{ form.style_weight | add_class:"form-control" }}
                     <!--error message -->
                     {% for error in form.style_weight.errors %}
+                        <span class="badge badge-danger">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- max iter -->
+                <div class="form-group">
+                    {{ form.max_iter.label_tag }}
+                    {{ form.max_iter | add_class:"form-control" }}
+                    <!--error message -->
+                    {% for error in form.max_iter.errors %}
                         <span class="badge badge-danger">
                             {{ error }}
                         </span>

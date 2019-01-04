@@ -80,14 +80,10 @@
                 </div>
 
                 <!-- use style segmap -->
-                <div class="form-check">
-                    <label class="form-check-label">
-                        {{ form.use_style_segmap | add_class:"form-check-input" }}
-                        {{ form.use_style_segmap.label }}
-                        <span class="form-check-sign">
-                            <span class="check"></span>
-                        </span>
-                    </label>
+                <div class="form-group">
+                        {{ form.style_segmap_setting.label_tag }}
+                        {{ form.style_segmap_setting | add_class:"form-control" }}
+
                     <!--error message -->
                     {% for error in form.user_style_segmap.errors %}
                         <span class="badge badge-danger">
@@ -243,33 +239,33 @@ $('.datetimepicker').datetimepicker({
 {# チェックボックスの値で入力の許可を判定 #}
 $(document).ready(function () {
     // style_segmapに関する入力の有効・無効
-    $('#id_use_style_segmap').change(function () {
-        let target_box = $("#id_style_segmap")
-        if ($('#id_use_style_segmap').prop("checked")){
+    $('#id_style_segmap_setting').change(function () {
+        let target_box = $("#id_style_segmap");
+        if ($('#id_style_segmap_setting').val() === "use" ){
             // チェックがされていれば
             target_box.prop('disabled', false);
-            target_box.parent().removeClass('btn-default')
-            target_box.parent().addClass('btn-primary')
+            target_box.parent().removeClass('btn-default');
+            target_box.parent().addClass('btn-primary');
         } else {
             // チェックがなければ
             target_box.prop('disabled', true);
-            target_box.parent().removeClass('btn-primary')
+            target_box.parent().removeClass('btn-primary');
             target_box.parent().addClass('btn-default')
         }
     });
 
     // content_segmapに関する入力の有効・無効
     $('#id_use_content_segmap').change(function () {
-        let target_box = $("#id_content_segmap")
+        let target_box = $("#id_content_segmap");
         if ($('#id_use_content_segmap').prop("checked")){
             // チェックがされていれば
             target_box.prop('disabled', false);
-            target_box.parent().removeClass('btn-default')
+            target_box.parent().removeClass('btn-default');
             target_box.parent().addClass('btn-primary')
         } else {
             // チェックがなければ
             target_box.prop('disabled', true);
-            target_box.parent().removeClass('btn-primary')
+            target_box.parent().removeClass('btn-primary');
             target_box.parent().addClass('btn-default')
         }
     });
