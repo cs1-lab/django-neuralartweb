@@ -37,8 +37,8 @@ class MaterialForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.MAX_W = 1500
-        self.MAX_H = 1500
+        self.MAX_W = 800
+        self.MAX_H = 800
 
         super(MaterialForm, self).__init__(*args, **kwargs)
 
