@@ -2,6 +2,8 @@ from django.db import models
 from django.core.files.images import get_image_dimensions
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from uuid import uuid4 as uuid
 from io import BytesIO
 from accounts.models import User
 from imagekit.models import ImageSpecField
@@ -10,7 +12,19 @@ from imagekit.processors import ResizeToFit
 from PIL import Image
 
 import json
+import os
 
+
+class UUIDFileSystemStorage(FileSystemStorage):
+    def get_valid_name(self, name):
+        '''
+        return the new filename using uuid(except hyphen) and original extension.
+        '''
+        fn, ext = os.path.splitext(name)
+        return uuid().hex + (ext or '')
+
+
+uuidfs = UUIDFileSystemStorage()
 
 def default_parameters():
     parameters = {}
@@ -31,7 +45,7 @@ class Material(models.Model):
 
     # TODO: 幅は縮小する処理をしているが、高さに関する処理がない
     # ResizeToFillやSmartResizeを使えばよいかも。調査の必要あり。
-    content_image = models.ImageField(upload_to='images/material/content/')
+    content_image = models.ImageField(upload_to='images/material/content/', storage=uuidfs)
     content_image_xs = ImageSpecField(source='content_image',
                                              processors=[ResizeToFit(width='150')],
                                              format='JPEG',
@@ -41,7 +55,7 @@ class Material(models.Model):
                                          format='JPEG',)
 
     use_content_segmap = models.BooleanField(default=True)
-    content_segmap = models.ImageField(upload_to='images/material/content_segmap', blank=True)
+    content_segmap = models.ImageField(upload_to='images/material/content_segmap', blank=True, storage=uuidfs)
     content_segmap_xs = ImageSpecField(source='content_segmap',
                                               processors=[ResizeToFit(width='150')],
                                               format='JPEG',
@@ -50,7 +64,7 @@ class Material(models.Model):
                                           processors=[ResizeToFit(width='500', upscale=False)],
                                           format='JPEG',)
 
-    style_image = models.ImageField(upload_to='images/material/style/')
+    style_image = models.ImageField(upload_to='images/material/style/', storage=uuidfs)
     style_image_xs = ImageSpecField(source='style_image',
                                            processors=[ResizeToFit(width='150')],
                                            format='JPEG',
@@ -60,7 +74,7 @@ class Material(models.Model):
                                        format='JPEG',)
 
     style_segmap_setting = models.CharField(max_length=30)
-    style_segmap = models.ImageField(upload_to='images/material/style_segmap', blank=True)
+    style_segmap = models.ImageField(upload_to='images/material/style_segmap', blank=True, storage=uuidfs)
     style_segmap_xs = ImageSpecField(source='style_segmap',
                                             processors=[ResizeToFit(width='150')],
                                             format='JPEG',
