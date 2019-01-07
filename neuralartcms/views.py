@@ -11,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.http import Http404
 from django.contrib import messages
 
+from datetime import datetime, timedelta, timezone
+
 from .models import Material, Result
 from .forms import MaterialForm, MaterialParameterSetForm, ResultUpdateForm
 
@@ -63,6 +65,39 @@ class MaterialCreateView(CreateView):
         kwargs = super(MaterialCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_initial(self):
+        return {
+            'start_at': self.initial_start_at(),
+        }
+
+    def initial_start_at(self):
+        """
+        start at (生成開始時間)の初期値を、直近で空いている時間に設定する
+        :return:
+        """
+        JST = timezone(timedelta(hours=+9))
+        # 分以下は切り捨てる
+        now = datetime.now(JST).replace(minute=0, second=0, microsecond=0)
+        initial_start_at = now + timedelta(hours=+4)  # 初期値は4時間後に設定
+
+        # 予約のない時間を検索して戻り値とする
+        return self.search_empty_start_at(initial_start_at)
+
+    def search_empty_start_at(self, start_at):
+        """
+        直近で空いているstart_atを検索する
+        TODO: 再帰関数を利用しており、性能に配慮する必要あり
+        :param start_at:
+        :return:
+        """
+        materials = Material.objects.all()
+
+        if materials.filter(start_at=start_at).exists():
+            start_at = start_at + timedelta(hours=+1)
+            return self.search_empty_start_at(start_at)
+        else:
+            return start_at
 
 
 @method_decorator(login_required, name='dispatch')

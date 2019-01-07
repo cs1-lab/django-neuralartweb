@@ -37,8 +37,8 @@ class MaterialForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.MAX_W = 1500
-        self.MAX_H = 1500
+        self.MAX_W = 1100
+        self.MAX_H = 800
 
         super(MaterialForm, self).__init__(*args, **kwargs)
 
@@ -164,8 +164,7 @@ class MaterialParameterSetForm(Form):
             ("1000", '1000回(推奨)'),
             ("2000", "2000回"),
             ("3000", "3000回"),
-            ("4000", "4000回"),
-            ("5000", "5000回"),
+            ("4000", "4000回(最大)"),
         )
     )
 
