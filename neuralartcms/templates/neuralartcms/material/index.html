@@ -45,10 +45,27 @@
                             {{ material.material_name }}
                         </a>
                     </th>
-                    <td><img src="{{ material.style_image_xs.url }}"></td>
-                    <td><img src="{{ material.style_segmap_xs.url }}"></td>
-                    <td><img src="{{ material.content_image_xs.url }}"></td>
-                    <td><img src="{{ material.content_segmap_xs.url }}"></td>
+                    <td>
+                        <a href="{{ material.style_image.url }}">
+                            <img src="{{ material.style_image_xs.url }}" alt="style image">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ material.style_segmap.url }}">
+                            <img src="{{ material.style_segmap_xs.url }}" alt="style segmap">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ material.content_image.url }}">
+                            <img src="{{ material.content_image_xs.url }}" alt="content image">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ material.content_segmap.url }}">
+                            <img src="{{ material.content_segmap_xs.url }}" alt="content segmap">
+                        </a>
+                    </td>
+
                     <td>{{ material.start_at }}</td>
                     <td>
                         {% if material.results.count > 0 %}

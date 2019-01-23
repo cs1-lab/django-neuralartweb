@@ -110,7 +110,7 @@ class Material(models.Model):
             style_segmap_io = BytesIO()
             style_segmap_.save(style_segmap_io, format='JPEG')
 
-            tmp_name = "style_segmap"
+            tmp_name = "style_segmap.jpg"
             self.style_segmap.save(
                 tmp_name,
                 content=ContentFile(style_segmap_io.getvalue()),
