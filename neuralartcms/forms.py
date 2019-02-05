@@ -55,6 +55,15 @@ class MaterialForm(ModelForm):
     def clean_style_image(self):
         style_image = self.cleaned_data["style_image"]
         w, h = get_image_dimensions(style_image)
+
+        # 長さが長い方を横幅でバリデーションするため
+        if h > w:
+            # w, hを入れ替える
+            tmp_w = w
+            tmp_h = h
+            w = tmp_h
+            h = tmp_w
+
         if w > self.MAX_W or h > self.MAX_H:
             # 画像サイズが大きすぎるとき
             raise forms.ValidationError("画像サイズは最大{}px×{}pxです。".format(self.MAX_W, self.MAX_H))
@@ -69,6 +78,15 @@ class MaterialForm(ModelForm):
     def clean_content_image(self):
         content_image = self.cleaned_data["content_image"]
         w, h = get_image_dimensions(content_image)
+
+        # 長さが長い方を横幅でバリデーションするため
+        if h > w:
+            # w, h を入れ替える
+            tmp_w = w
+            tmp_h = h
+            w = tmp_h
+            h = tmp_w
+
         if w > self.MAX_W or h > self.MAX_H:
             # 画像サイズが大きすぎるとき
             raise forms.ValidationError("画像サイズは最大{}px×{}pxです。".format(self.MAX_W, self.MAX_H))
